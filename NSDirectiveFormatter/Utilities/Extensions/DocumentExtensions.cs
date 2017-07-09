@@ -3,6 +3,7 @@
     using System;
     using EnvDTE80;
     using Microsoft.VisualStudio.Shell;
+    using NSDirectiveFormatter.Utilities;
     using Microsoft.VisualStudio.Text.Editor;
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.TextManager.Interop;
@@ -21,6 +22,9 @@
         /// <returns></returns>
         public static IVsTextView ToIVsTextView(this Document document, DTE2 dte2)
         {
+            ArgumentGuard.ArgumentNotNull(document, "document");
+            ArgumentGuard.ArgumentNotNull(dte2, "dte2");
+
             IVsUIHierarchy uiHierarchy;
             uint itemId;
             IVsWindowFrame windowFrame;
@@ -41,6 +45,9 @@
         /// <returns></returns>
         public static IWpfTextView ToIWpfTextView(this Document document, DTE2 dte2)
         {
+            ArgumentGuard.ArgumentNotNull(document, "document");
+            ArgumentGuard.ArgumentNotNull(dte2, "dte2");
+
             return document.ToIVsTextView(dte2).ToWpfTextView();
         }
 
@@ -53,6 +60,8 @@
         /// </returns>
         public static bool IsCSharpCode(this Document document)
         {
+            ArgumentGuard.ArgumentNotNull(document, "document");
+
             return document.Language.Equals("CSharp", StringComparison.OrdinalIgnoreCase);
         }
     }

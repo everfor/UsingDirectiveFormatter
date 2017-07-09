@@ -54,6 +54,7 @@
     <Compile Include="Commands\FormatCommand.cs" />
     <Compile Include="Commands\FormatCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ArgumentGuard.cs" />
     <Compile Include="Utilities\Extensions\DocumentExtensions.cs" />
     <Compile Include="Utilities\Extensions\TextBufferExtensions.cs" />
     <Compile Include="Utilities\Extensions\VSTextViewExtensions.cs" />

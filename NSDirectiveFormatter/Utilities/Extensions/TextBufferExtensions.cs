@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using NSDirectiveFormatter.Utilities;
 
     /// <summary>
     /// TextBufferExtensions
@@ -25,6 +26,8 @@
         /// <param name="buffer">The buffer.</param>
         public static void Format(this ITextBuffer buffer)
         {
+            ArgumentGuard.ArgumentNotNull(buffer, "buffer");
+
             var snapShot = buffer.CurrentSnapshot;
 
             int cursor = 0;

@@ -1,8 +1,9 @@
 ﻿namespace Microsoft.VisualStudio.TextManager.Interop
 {
     using ComponentModelHost;
-    using Microsoft.VisualStudio.Editor;
     using Microsoft.VisualStudio.Shell;
+    using NSDirectiveFormatter.Utilities;
+    using Microsoft.VisualStudio.Editor;
     using Microsoft.VisualStudio.Text.Editor;
 
     /// <summary>
@@ -17,6 +18,8 @@
         /// <returns></returns>
         public static IWpfTextView ToWpfTextView(this IVsTextView textView)
         {
+            ArgumentGuard.ArgumentNotNull(textView, "textView");
+
             var componentModel = Package.GetGlobalService(typeof(SComponentModel)) as IComponentModel;
             var editorAdaptor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
 
