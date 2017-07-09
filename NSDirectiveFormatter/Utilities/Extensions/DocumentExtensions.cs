@@ -43,5 +43,17 @@
         {
             return document.ToIVsTextView(dte2).ToWpfTextView();
         }
+
+        /// <summary>
+        /// Determines whether [is c sharp code].
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <returns>
+        ///   <c>true</c> if [is c sharp code] [the specified document]; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsCSharpCode(this Document document)
+        {
+            return document.Language.Equals("CSharp", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

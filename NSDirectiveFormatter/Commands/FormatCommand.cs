@@ -3,19 +3,17 @@
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-
-using System;
-using System.ComponentModel.Design;
-using System.Globalization;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.TextManager.Interop;
-
 namespace NSDirectiveFormatter.Commands
 {
+    using EnvDTE;
+    using System;
+    using EnvDTE80;
+    using Microsoft.VisualStudio.Text;
+    using Microsoft.VisualStudio.Shell;
+    using System.ComponentModel.Design;
+    using Microsoft.VisualStudio.Shell.Interop;
+    
+
     /// <summary>
     /// Command handler
     /// </summary>
@@ -36,9 +34,23 @@ namespace NSDirectiveFormatter.Commands
         /// </summary>
         private readonly Package package;
 
-        private DTE2 Dte;
+        /// <summary>
+        /// The DTE
+        /// </summary>
+        private DTE2 Dte
+        {
+            get;
+            set;
+        }
 
-        private Document document;
+        /// <summary>
+        /// The document
+        /// </summary>
+        private Document document
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormatCommand"/> class.
@@ -57,16 +69,8 @@ namespace NSDirectiveFormatter.Commands
                 menuItem.BeforeQueryStatus += MenuItem_BeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
-        }
 
-        private DTE2 GetDte()
-        {
-            if (this.Dte == null)
-            {
-                this.Dte = this.ServiceProvider.GetService(typeof(SDTE)) as DTE2;
-            }
-
-            return this.Dte;
+            this.Dte = this.ServiceProvider.GetService(typeof(SDTE)) as DTE2;
         }
 
         /// <summary>
@@ -98,6 +102,11 @@ namespace NSDirectiveFormatter.Commands
             Instance = new FormatCommand(package);
         }
 
+        /// <summary>
+        /// Handles the BeforeQueryStatus event of the MenuItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void MenuItem_BeforeQueryStatus(object sender, EventArgs e)
         {
             var command = (OleMenuCommand)sender;
@@ -105,9 +114,10 @@ namespace NSDirectiveFormatter.Commands
             command.Visible = false;
             command.Enabled = false;
 
-            this.document = this.GetDte().ActiveDocument;
+            this.document = this.Dte.ActiveDocument;
 
-            if (this.document == null || !this.document.Language.Equals("CSharp", StringComparison.OrdinalIgnoreCase))
+            if (this.document == null || 
+                !this.document.IsCSharpCode())
             {
                 return;
             }
@@ -125,12 +135,7 @@ namespace NSDirectiveFormatter.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            //string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            var title = "FormatCommand";
-            var document = this.GetDte().ActiveDocument;
-            var textView = document.ToIWpfTextView(this.GetDte());
-
-            textView.TextBuffer.Format();
+            this.document.ToIWpfTextView(this.Dte).TextBuffer.Format();
         }
     }
 }

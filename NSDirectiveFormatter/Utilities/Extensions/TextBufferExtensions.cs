@@ -1,9 +1,8 @@
 ﻿namespace Microsoft.VisualStudio.Text
 {
     using System;
-    using Microsoft.VisualStudio.Text;
-    using System.Collections.Generic;
     using System.Linq;
+    using System.Collections.Generic;
 
     /// <summary>
     /// TextBufferExtensions
@@ -71,6 +70,16 @@
 
                     if (lineTextTrimmed.StartsWith(UsingNamespaceDirectivePrefix, StringComparison.Ordinal))
                     {
+                        if (startPos == 0)
+                        {
+                            startPos = cursor;
+                        }
+
+                        if (nsInnerStartPos == 0)
+                        {
+                            nsInnerStartPos = cursor;
+                        }
+
                         usingDirectives.Add(lineTextTrimmed);
                         if (nsReached)
                         {
@@ -92,7 +101,8 @@
                             nsInnerStartPos = tail;
                         }
                     }
-                    else if (lineTextTrimmed.Equals(";", StringComparison.Ordinal))
+                    else if (lineTextTrimmed.Equals(";", StringComparison.Ordinal) ||
+                        lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
                     {
                         continue;
                     }
