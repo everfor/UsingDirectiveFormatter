@@ -29,7 +29,8 @@
             uint itemId;
             IVsWindowFrame windowFrame;
 
-            if (VsShellUtilities.IsDocumentOpen(new ServiceProvider(dte2 as VSIServiceProvider), document.FullName, Guid.Empty, out uiHierarchy, out itemId, out windowFrame))
+            if (VsShellUtilities.IsDocumentOpen(new ServiceProvider(dte2 as VSIServiceProvider), 
+                document.FullName, Guid.Empty, out uiHierarchy, out itemId, out windowFrame))
             {
                 return VsShellUtilities.GetTextView(windowFrame);
             }

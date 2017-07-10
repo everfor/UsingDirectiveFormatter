@@ -57,6 +57,7 @@
         <Icon guid="guidImages" id="bmpPic1" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Format Using Directives</ButtonText>
         </Strings>
@@ -74,6 +75,10 @@
     </Bitmaps>
   </Commands>
   
+  <KeyBindings>  
+    <KeyBinding guid="guidFormatCommandPackageCmdSet" id="FormatCommandId" key1="VK_OEM_2" mod1="Control Shift" editor="guidVSStd97" />  
+  </KeyBindings>
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidFormatCommandPackage" value="{a385812e-17cc-4ed0-a6d0-f0d8db1ff294}" />
