@@ -48,8 +48,8 @@
             // Using directives inside namespace, or all usings is there's no namespace
             Span? nsSpan = null;
 
-            bool lastLineEmpty = false;
-            var emptyLines = new List<ITextSnapshotLine>();
+            bool lastLineEmptyOrComment = false;
+            var emptyOrCommentLines = new List<ITextSnapshotLine>();
 
             for (int l = 0; l < snapShot.LineCount; l++, cursor = tail)
             {
@@ -59,16 +59,17 @@
 
                 tail += line.LengthIncludingLineBreak;
 
-                if (string.IsNullOrWhiteSpace(lineTextTrimmed))
+                if (string.IsNullOrWhiteSpace(lineTextTrimmed) ||
+                        lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
                 {
-                    emptyLines.Add(line);
-                    lastLineEmpty = true;
+                    emptyOrCommentLines.Add(line);
+                    lastLineEmptyOrComment = true;
                 }
                 else
                 {
-                    if (!lastLineEmpty)
+                    if (!lastLineEmptyOrComment)
                     {
-                        emptyLines.Clear();
+                        emptyOrCommentLines.Clear();
                     }
 
                     if (lineTextTrimmed.StartsWith(UsingNamespaceDirectivePrefix, StringComparison.Ordinal))
@@ -104,8 +105,7 @@
                             nsInnerStartPos = tail;
                         }
                     }
-                    else if (lineTextTrimmed.Equals(";", StringComparison.Ordinal) ||
-                        lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
+                    else if (lineTextTrimmed.Equals(";", StringComparison.Ordinal))
                     {
                         continue;
                     }
@@ -113,7 +113,8 @@
                     {
                         nsSpan =
                             new Span(nsInnerStartPos,
-                            cursor - nsInnerStartPos - emptyLines.Aggregate(0, (len, eline) => len + eline.LengthIncludingLineBreak));
+                            cursor - nsInnerStartPos - 
+                            emptyOrCommentLines.Aggregate(0, (len, eline) => len + eline.LengthIncludingLineBreak));
                         break;
                     }
                 }
