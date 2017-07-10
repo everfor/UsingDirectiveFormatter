@@ -13,7 +13,6 @@ namespace NSDirectiveFormatter.Commands
     using System.ComponentModel.Design;
     using Microsoft.VisualStudio.Shell.Interop;
     
-
     /// <summary>
     /// Command handler
     /// </summary>

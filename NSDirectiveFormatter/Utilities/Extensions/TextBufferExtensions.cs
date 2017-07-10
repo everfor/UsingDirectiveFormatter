@@ -49,28 +49,30 @@
             Span? nsSpan = null;
 
             bool lastLineEmptyOrComment = false;
-            var emptyOrCommentLines = new List<ITextSnapshotLine>();
+            int spanToPreserve = 0;
 
-            for (int l = 0; l < snapShot.LineCount; l++, cursor = tail)
+            foreach (var line in snapShot.Lines)
             {
-                var line = snapShot.GetLineFromLineNumber(l);
                 var lineText = line.GetText();
                 var lineTextTrimmed = lineText.TrimStart();
 
+                cursor = tail;
                 tail += line.LengthIncludingLineBreak;
 
                 if (string.IsNullOrWhiteSpace(lineTextTrimmed) ||
                         lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
                 {
-                    emptyOrCommentLines.Add(line);
+                    spanToPreserve += line.LengthIncludingLineBreak;
                     lastLineEmptyOrComment = true;
                 }
                 else
                 {
                     if (!lastLineEmptyOrComment)
                     {
-                        emptyOrCommentLines.Clear();
+                        spanToPreserve = 0;
                     }
+
+                    lastLineEmptyOrComment = false;
 
                     if (lineTextTrimmed.StartsWith(UsingNamespaceDirectivePrefix, StringComparison.Ordinal))
                     {
@@ -92,7 +94,7 @@
                     }
                     else if (lineTextTrimmed.StartsWith(NamespaceDeclarationPrefix, StringComparison.Ordinal))
                     {
-                        prensSpan = new Span(0, cursor);
+                        prensSpan = new Span(0, cursor - spanToPreserve);
                         nsReached = true;
                         startPos = tail;
                         nsInnerStartPos = tail;
@@ -112,9 +114,7 @@
                     else
                     {
                         nsSpan =
-                            new Span(nsInnerStartPos,
-                            cursor - nsInnerStartPos - 
-                            emptyOrCommentLines.Aggregate(0, (len, eline) => len + eline.LengthIncludingLineBreak));
+                            new Span(nsInnerStartPos, cursor - nsInnerStartPos - spanToPreserve);
                         break;
                     }
                 }
