@@ -1,23 +1,11 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="FormatCommandPackage.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
-using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
-
-namespace NSDirectiveFormatter.Commands
+﻿namespace NSDirectiveFormatter.Commands
 {
+    using System;
+    using Microsoft.VisualStudio;
+    using Microsoft.VisualStudio.Shell;
+    using System.Runtime.InteropServices;
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
     /// </summary>

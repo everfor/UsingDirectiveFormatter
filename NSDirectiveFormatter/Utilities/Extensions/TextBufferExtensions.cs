@@ -59,6 +59,13 @@
                 cursor = tail;
                 tail += line.LengthIncludingLineBreak;
 
+                if (nsReached && 
+                    !string.IsNullOrWhiteSpace(lineTextTrimmed) && 
+                    string.IsNullOrEmpty(indent))
+                {
+                    indent = lineText.Substring(0, lineText.IndexOf(lineTextTrimmed));
+                }
+
                 if (string.IsNullOrWhiteSpace(lineTextTrimmed) ||
                         lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
                 {
@@ -87,10 +94,6 @@
                         }
 
                         usingDirectives.Add(lineTextTrimmed);
-                        if (nsReached)
-                        {
-                            indent = lineText.Substring(0, lineText.IndexOf(UsingNamespaceDirectivePrefix));
-                        }
                     }
                     else if (lineTextTrimmed.StartsWith(NamespaceDeclarationPrefix, StringComparison.Ordinal))
                     {
@@ -123,7 +126,7 @@
             usingDirectives = usingDirectives.AsEnumerable().OrderBy(s => s.Length).Select(s => indent + s).ToList();
 
             var insertPos = nsReached ? startPos : 0;
-            var insertString = string.Join("\r\n", usingDirectives);
+            var insertString = string.Join("\r\n", usingDirectives) + "\r\n";
 
             // Testing
             var edit = buffer.CreateEdit();
