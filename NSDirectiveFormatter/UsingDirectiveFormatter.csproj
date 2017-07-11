@@ -54,9 +54,13 @@
   <ItemGroup>
     <Compile Include="Commands\FormatCommand.cs" />
     <Compile Include="Commands\FormatCommandPackage.cs" />
+    <Compile Include="Commands\FormatOptionGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ArgumentGuard.cs" />
     <Compile Include="Utilities\Extensions\DocumentExtensions.cs" />
+    <Compile Include="Utilities\Extensions\CollectionsExtensions.cs" />
     <Compile Include="Utilities\Extensions\TextBufferExtensions.cs" />
     <Compile Include="Utilities\Extensions\VSTextViewExtensions.cs" />
   </ItemGroup>
@@ -145,6 +149,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />

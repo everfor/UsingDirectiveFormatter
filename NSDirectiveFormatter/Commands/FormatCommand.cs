@@ -8,6 +8,7 @@ namespace UsingDirectiveFormatter.Commands
     using EnvDTE;
     using System;
     using EnvDTE80;
+    using System.Collections.Generic;
     using Microsoft.VisualStudio.Text;
     using Microsoft.VisualStudio.Shell;
     using System.ComponentModel.Design;
@@ -134,7 +135,11 @@ namespace UsingDirectiveFormatter.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            this.document.ToIWpfTextView(this.Dte).TextBuffer.Format();
+            var options = ((FormatCommandPackage)this.package).GetOptions();
+            this.document
+                .ToIWpfTextView(this.Dte)
+                .TextBuffer
+                .Format(new List<SortStandard> { options.SortOrderOption, options.ChainedSortOrderOption }, options.InsideNamespace);
         }
     }
 }

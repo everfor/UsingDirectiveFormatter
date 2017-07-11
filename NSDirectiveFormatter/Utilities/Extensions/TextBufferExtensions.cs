@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using UsingDirectiveFormatter.Commands;
     using UsingDirectiveFormatter.Utilities;
 
     /// <summary>
@@ -24,7 +25,8 @@
         /// Formats the specified buffer.
         /// </summary>
         /// <param name="buffer">The buffer.</param>
-        public static void Format(this ITextBuffer buffer)
+        public static void Format(this ITextBuffer buffer, IList<SortStandard> sortStandards, 
+            bool insideNamespace = true)
         {
             ArgumentGuard.ArgumentNotNull(buffer, "buffer");
 
@@ -35,11 +37,12 @@
 
             // using directive related
             var usingDirectives = new List<string>();
-            int startPos = 0;
+            int nsInnerStartPos = 0;
+            int nsOuterStartPos = 0;
 
             // Namespace related flags
             bool nsReached = false;
-            int nsInnerStartPos = 0;
+            int startPos = 0;
 
             string indent = "";
 
@@ -59,7 +62,7 @@
                 cursor = tail;
                 tail += line.LengthIncludingLineBreak;
 
-                if (nsReached && 
+                if (nsReached && insideNamespace &&
                     !string.IsNullOrWhiteSpace(lineTextTrimmed) && 
                     string.IsNullOrEmpty(indent))
                 {
@@ -83,14 +86,19 @@
 
                     if (lineTextTrimmed.StartsWith(UsingNamespaceDirectivePrefix, StringComparison.Ordinal))
                     {
+                        if (nsInnerStartPos == 0)
+                        {
+                            nsInnerStartPos = cursor;
+                        }
+
                         if (startPos == 0)
                         {
                             startPos = cursor;
                         }
 
-                        if (nsInnerStartPos == 0)
+                        if (nsOuterStartPos == 0 && !nsReached)
                         {
-                            nsInnerStartPos = cursor;
+                            nsOuterStartPos = cursor;
                         }
 
                         usingDirectives.Add(lineTextTrimmed);
@@ -99,15 +107,16 @@
                     {
                         prensSpan = new Span(0, cursor - spanToPreserve);
                         nsReached = true;
-                        startPos = tail;
                         nsInnerStartPos = tail;
+                        startPos = tail;
+                        nsOuterStartPos = cursor;
                     }
                     else if (lineTextTrimmed.Equals("{", StringComparison.Ordinal))
                     {
                         if (nsReached)
                         {
-                            startPos = tail;
                             nsInnerStartPos = tail;
+                            startPos = tail;
                         }
                     }
                     else if (lineTextTrimmed.Equals(";", StringComparison.Ordinal))
@@ -117,15 +126,18 @@
                     else
                     {
                         nsSpan =
-                            new Span(nsInnerStartPos, cursor - nsInnerStartPos - spanToPreserve);
+                            new Span(startPos, cursor - startPos - spanToPreserve);
                         break;
                     }
                 }
             }
 
-            usingDirectives = usingDirectives.AsEnumerable().OrderBy(s => s.Length).Select(s => indent + s).ToList();
+            usingDirectives = usingDirectives.OrderBySortStandards(sortStandards)
+                .ToList()
+                .Select(s => indent + s)
+                .ToList();
 
-            var insertPos = nsReached ? startPos : 0;
+            var insertPos = nsReached && insideNamespace ? nsInnerStartPos : nsOuterStartPos;
             var insertString = string.Join("\r\n", usingDirectives) + "\r\n";
 
             // Testing

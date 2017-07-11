@@ -28,6 +28,7 @@
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(FormatCommandPackage.PackageGuidString)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string)]
+    [ProvideOptionPage(typeof(FormatOptionGrid), "Using Directive Formatter", "Options", 0, 0, true)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class FormatCommandPackage : Package
     {
@@ -60,5 +61,14 @@
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets the options.
+        /// </summary>
+        /// <returns></returns>
+        internal FormatOptionGrid GetOptions()
+        {
+            return (FormatOptionGrid)GetDialogPage(typeof(FormatOptionGrid));
+        }
     }
 }
