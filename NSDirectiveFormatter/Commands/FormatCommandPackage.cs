@@ -1,4 +1,4 @@
-﻿namespace NSDirectiveFormatter.Commands
+﻿namespace UsingDirectiveFormatter.Commands
 {
     using System;
     using Microsoft.VisualStudio;

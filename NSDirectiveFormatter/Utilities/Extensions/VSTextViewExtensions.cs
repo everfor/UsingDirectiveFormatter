@@ -2,8 +2,8 @@
 {
     using ComponentModelHost;
     using Microsoft.VisualStudio.Shell;
-    using NSDirectiveFormatter.Utilities;
     using Microsoft.VisualStudio.Editor;
+    using UsingDirectiveFormatter.Utilities;
     using Microsoft.VisualStudio.Text.Editor;
 
     /// <summary>

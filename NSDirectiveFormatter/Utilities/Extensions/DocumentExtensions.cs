@@ -3,7 +3,7 @@
     using System;
     using EnvDTE80;
     using Microsoft.VisualStudio.Shell;
-    using NSDirectiveFormatter.Utilities;
+    using UsingDirectiveFormatter.Utilities;
     using Microsoft.VisualStudio.Text.Editor;
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.VisualStudio.TextManager.Interop;

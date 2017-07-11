@@ -3,7 +3,7 @@
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
 //------------------------------------------------------------------------------
-namespace NSDirectiveFormatter.Commands
+namespace UsingDirectiveFormatter.Commands
 {
     using EnvDTE;
     using System;

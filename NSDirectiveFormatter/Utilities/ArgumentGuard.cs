@@ -1,4 +1,4 @@
-﻿namespace NSDirectiveFormatter.Utilities
+﻿namespace UsingDirectiveFormatter.Utilities
 {
     using System;
 
