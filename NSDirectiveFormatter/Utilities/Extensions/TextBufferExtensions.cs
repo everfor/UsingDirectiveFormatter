@@ -132,10 +132,7 @@
                 }
             }
 
-            usingDirectives = usingDirectives.OrderBySortStandards(sortStandards)
-                .ToList()
-                .Select(s => indent + s)
-                .ToList();
+            usingDirectives = usingDirectives.OrderBySortStandards(sortStandards).Select(s => indent + s).ToList();
 
             var insertPos = nsReached && insideNamespace ? nsInnerStartPos : nsOuterStartPos;
             var insertString = string.Join("\r\n", usingDirectives) + "\r\n";
