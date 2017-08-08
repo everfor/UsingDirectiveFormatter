@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="UsingDirectiveFormatter.Alan Yang.2b532cfa-59ef-4e4e-8b4c-11a39ffd91cf" Version="1.3" Language="en-US" Publisher="Alan Yang" />
+    <Identity Id="UsingDirectiveFormatter.Alan Yang.2b532cfa-59ef-4e4e-8b4c-11a39ffd91cf" Version="1.4" Language="en-US" Publisher="Alan Yang" />
     <DisplayName>Using Directive Formatter</DisplayName>
     <Description xml:space="preserve">Formats using namespace directives in C# code</Description>
   </Metadata>

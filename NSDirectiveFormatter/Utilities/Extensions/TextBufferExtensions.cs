@@ -51,7 +51,7 @@
             // Using directives inside namespace, or all usings is there's no namespace
             Span? nsSpan = null;
 
-            bool lastLineEmptyOrComment = false;
+            bool lastLineComment = false;
             int spanToPreserve = 0;
 
             foreach (var line in snapShot.Lines)
@@ -69,20 +69,19 @@
                     indent = lineText.Substring(0, lineText.IndexOf(lineTextTrimmed));
                 }
 
-                if (string.IsNullOrWhiteSpace(lineTextTrimmed) ||
-                        lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
+                if (lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
                 {
                     spanToPreserve += line.LengthIncludingLineBreak;
-                    lastLineEmptyOrComment = true;
+                    lastLineComment = true;
                 }
-                else
+                else if (!string.IsNullOrWhiteSpace(lineTextTrimmed))
                 {
-                    if (!lastLineEmptyOrComment)
+                    if (!lastLineComment)
                     {
                         spanToPreserve = 0;
                     }
 
-                    lastLineEmptyOrComment = false;
+                    lastLineComment = false;
 
                     if (lineTextTrimmed.StartsWith(UsingNamespaceDirectivePrefix, StringComparison.Ordinal))
                     {
@@ -132,10 +131,10 @@
                 }
             }
 
-            usingDirectives = usingDirectives.OrderBySortStandards(sortStandards).Select(s => indent + s).ToList();
+            usingDirectives = usingDirectives.Select(s => s.TrimEnd()).OrderBySortStandards(sortStandards).Select(s => indent + s).ToList();
 
             var insertPos = nsReached && insideNamespace ? nsInnerStartPos : nsOuterStartPos;
-            var insertString = string.Join("\r\n", usingDirectives) + "\r\n";
+            var insertString = string.Join("\r\n", usingDirectives) + "\r\n" + "\r\n";
 
             // Testing
             var edit = buffer.CreateEdit();
