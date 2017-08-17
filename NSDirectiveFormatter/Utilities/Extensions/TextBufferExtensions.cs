@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using UsingDirectiveFormatter.Utilities;
     using UsingDirectiveFormatter.Contracts;
+    using UsingDirectiveFormatter.Commands;
 
     /// <summary>
     /// TextBufferExtensions
@@ -25,10 +26,15 @@
         /// Formats the specified buffer.
         /// </summary>
         /// <param name="buffer">The buffer.</param>
-        public static void Format(this ITextBuffer buffer, IList<SortStandard> sortStandards, 
-            bool insideNamespace = true)
+        public static void Format(this ITextBuffer buffer, FormatOptionGrid options)
         {
             ArgumentGuard.ArgumentNotNull(buffer, "buffer");
+            ArgumentGuard.ArgumentNotNull(options, "options");
+
+            // Parse options
+            var sortStandards = new List<SortStandard> { options.SortOrderOption, options.ChainedSortOrderOption };
+            var insideNamespace = options.InsideNamespace;
+            var sortGroups = options.SortGroups.ToList();
 
             var snapShot = buffer.CurrentSnapshot;
 
@@ -132,9 +138,10 @@
             }
 
             usingDirectives = usingDirectives.Select(s => s.TrimEnd()).OrderBySortStandards(sortStandards).Select(s => indent + s).ToList();
+            usingDirectives = usingDirectives.GroupBySortGroups(sortGroups).ToList();
 
             var insertPos = nsReached && insideNamespace ? nsInnerStartPos : nsOuterStartPos;
-            var insertString = string.Join("\r\n", usingDirectives) + "\r\n" + "\r\n";
+            var insertString = string.Join(Environment.NewLine, usingDirectives) + Environment.NewLine + Environment.NewLine;
 
             // Testing
             var edit = buffer.CreateEdit();

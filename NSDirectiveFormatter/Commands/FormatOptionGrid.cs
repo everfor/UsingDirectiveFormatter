@@ -3,7 +3,9 @@
     using System.ComponentModel;
     using Microsoft.VisualStudio.Shell;
     using System.Collections.ObjectModel;
+    using Microsoft.VisualStudio.Settings;
     using UsingDirectiveFormatter.Contracts;
+    using Microsoft.VisualStudio.Shell.Settings;
 
     /// <summary>
     /// FormatOptionGrid
@@ -11,6 +13,11 @@
     /// <seealso cref="Microsoft.VisualStudio.Shell.DialogPage" />
     public class FormatOptionGrid : DialogPage
     {
+        /// <summary>
+        /// The collection name
+        /// </summary>
+        private static readonly string CollectionName = "UsingDirectiveFormatterVSIX";
+
         /// <summary>
         /// The inside namespace
         /// </summary>
@@ -38,7 +45,7 @@
         /// The sort order option.
         /// </value>
         [Category("Options")]
-        [DisplayName("Inside Namespace")]
+        [DisplayName("1. Inside Namespace")]
         [Description("Place using's inside namespace")]
         public bool InsideNamespace
         {
@@ -119,6 +126,51 @@
             {
                 sortGroups = value;
             }
+        }
+
+        /// <summary>
+        /// Called by Visual Studio to store the settings of a dialog page in local storage, typically the registry.
+        /// </summary>
+        public override void SaveSettingsToStorage()
+        {
+            base.SaveSettingsToStorage();
+
+            // Custom saving for sort group collections, since visual studio is broken and cannot save this
+            // https://stackoverflow.com/questions/32751040/store-array-in-options-using-dialogpage
+            var settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+            var userSettingStore = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+
+            if (!userSettingStore.CollectionExists(CollectionName))
+            {
+                userSettingStore.CreateCollection(CollectionName);
+            }
+
+            var sortGroupCollectionConverter = new SortGroupCollectionConverter();
+
+            userSettingStore.SetString(CollectionName, nameof(SortGroups), 
+                sortGroupCollectionConverter.ConvertTo(this.SortGroups, typeof(string)) as string);
+        }
+
+        /// <summary>
+        /// Called by Visual Studio to load the settings of a dialog page from local storage, generally the registry.
+        /// </summary>
+        public override void LoadSettingsFromStorage()
+        {
+            base.LoadSettingsFromStorage();
+
+            // Custom loading for sort group collections, since visual studio is broken and cannot save this
+            // https://stackoverflow.com/questions/32751040/store-array-in-options-using-dialogpage
+            var settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+            var userSettingStore = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+
+            if (!userSettingStore.CollectionExists(CollectionName))
+            {
+                return;
+            }
+
+            var sortGroupCollectionConverter = new SortGroupCollectionConverter();
+            this.SortGroups = sortGroupCollectionConverter.ConvertFrom(
+                userSettingStore.GetString(CollectionName, nameof(SortGroups))) as Collection<SortGroup>;
         }
     }
 }

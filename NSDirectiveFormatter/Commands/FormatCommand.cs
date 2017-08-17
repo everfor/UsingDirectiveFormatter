@@ -140,7 +140,7 @@ namespace UsingDirectiveFormatter.Commands
             this.document
                 .ToIWpfTextView(this.Dte)
                 .TextBuffer
-                .Format(new List<SortStandard> { options.SortOrderOption, options.ChainedSortOrderOption }, options.InsideNamespace);
+                .Format(options);
         }
     }
 }

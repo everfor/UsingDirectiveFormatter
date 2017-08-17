@@ -11,6 +11,11 @@
     public static class GenericsExtensions
     {
         /// <summary>
+        /// The using namespace directive prefix
+        /// </summary>
+        private static readonly string UsingNamespaceDirectivePrefix = "using";
+
+        /// <summary>
         /// Orders the by sort standards.
         /// </summary>
         /// <param name="collection">The collection.</param>
@@ -77,6 +82,50 @@
             }
 
             throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Groups the by sort groups.
+        /// </summary>
+        /// <param name="collection">The collection.</param>
+        /// <param name="groups">The groups.</param>
+        /// <returns></returns>
+        public static IList<string> GroupBySortGroups(this IList<string> collection, IList<SortGroup> groups)
+        {
+            ArgumentGuard.ArgumentNotNull(collection, "collection");
+            ArgumentGuard.ArgumentNotNull(groups, "groups");
+
+            if (!groups.Any())
+            {
+                return collection;
+            }
+
+            var dict = new Dictionary<SortGroup, IList<string>>();
+            foreach (var group in groups)
+            {
+                dict[group] = new List<string>();
+            }
+
+            foreach (var value in collection)
+            {
+                foreach (var group in groups)
+                {
+                    if (group.Validate(value.Replace(UsingNamespaceDirectivePrefix, string.Empty).Trim()))
+                    {
+                        dict[group].Add(value);
+                        break;
+                    }
+                }
+            }
+
+            var result = new List<string>();
+            foreach (var group in groups)
+            {
+                result.AddRange(dict[group]);
+            }
+            result.AddRange(collection);
+
+            return result.Distinct().ToList();
         }
     }
 }

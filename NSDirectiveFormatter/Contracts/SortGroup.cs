@@ -1,8 +1,6 @@
 ﻿namespace UsingDirectiveFormatter.Contracts
 {
     using System;
-    using System.ComponentModel;
-    using UsingDirectiveFormatter.Commands;
     using UsingDirectiveFormatter.Utilities;
 
     /// <summary>
@@ -54,7 +52,6 @@
         public SortGroup(SortGroupStandard standard, string filter)
         {
             ArgumentGuard.ArgumentNotNullOrWhiteSpace(filter, "filter");
-            ArgumentGuard.ArgumentNotNullOrWhiteSpace(name, "name");
 
             this.Standard = standard;
             this.Filter = filter;

@@ -58,12 +58,14 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Contracts\SortGroup.cs" />
+    <Compile Include="Contracts\SortGroupStandard.cs" />
     <Compile Include="Contracts\SortStandard.cs" />
     <Compile Include="Designer\SortGroupCollectionConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ArgumentGuard.cs" />
     <Compile Include="Utilities\Extensions\DocumentExtensions.cs" />
-    <Compile Include="Utilities\Extensions\CollectionsExtensions.cs" />
+    <Compile Include="Utilities\Extensions\GenericsExtensions.cs" />
+    <Compile Include="Utilities\Extensions\SortGroupExtension.cs" />
     <Compile Include="Utilities\Extensions\TextBufferExtensions.cs" />
     <Compile Include="Utilities\Extensions\VSTextViewExtensions.cs" />
   </ItemGroup>
