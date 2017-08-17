@@ -12,8 +12,9 @@ namespace UsingDirectiveFormatter.Commands
     using Microsoft.VisualStudio.Text;
     using Microsoft.VisualStudio.Shell;
     using System.ComponentModel.Design;
+    using UsingDirectiveFormatter.Contracts;
     using Microsoft.VisualStudio.Shell.Interop;
-    
+
     /// <summary>
     /// Command handler
     /// </summary>

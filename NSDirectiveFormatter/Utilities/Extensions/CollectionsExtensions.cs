@@ -2,7 +2,7 @@
 {
     using System;
     using System.Linq;
-    using UsingDirectiveFormatter.Commands;
+    using UsingDirectiveFormatter.Contracts;
     using UsingDirectiveFormatter.Utilities;
 
     /// <summary>

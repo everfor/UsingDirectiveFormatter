@@ -2,12 +2,14 @@
 {
     using System.ComponentModel;
     using Microsoft.VisualStudio.Shell;
+    using System.Collections.ObjectModel;
+    using UsingDirectiveFormatter.Contracts;
 
     /// <summary>
     /// FormatOptionGrid
     /// </summary>
     /// <seealso cref="Microsoft.VisualStudio.Shell.DialogPage" />
-    internal class FormatOptionGrid : DialogPage
+    public class FormatOptionGrid : DialogPage
     {
         /// <summary>
         /// The inside namespace
@@ -25,13 +27,18 @@
         private SortStandard chainedSortOrder = SortStandard.None;
 
         /// <summary>
+        /// The sort groups
+        /// </summary>
+        private Collection<SortGroup> sortGroups = new Collection<SortGroup>();
+
+        /// <summary>
         /// Gets or sets the sort order option.
         /// </summary>
         /// <value>
         /// The sort order option.
         /// </value>
         [Category("Options")]
-        [DisplayName("1. Inside Namespace")]
+        [DisplayName("Inside Namespace")]
         [Description("Place using's inside namespace")]
         public bool InsideNamespace
         {
@@ -89,36 +96,29 @@
                 chainedSortOrder = value;
             }
         }
-    }
-
-    /// <summary>
-    /// SortOrder
-    /// </summary>
-    public enum SortStandard
-    {
-        /// <summary>
-        /// The length
-        /// </summary>
-        Length = 0,
 
         /// <summary>
-        /// The length descending
+        /// Gets or sets the sort groups.
         /// </summary>
-        LengthDescending,
+        /// <value>
+        /// The sort groups.
+        /// </value>
+        [Category("Options")]
+        [DisplayName("4. Sort Groups")]
+        [Description("Namespace groups that have relative orders defined by user: sorting will only happen within groups.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [TypeConverter(typeof(SortGroupCollectionConverter))]
+        public Collection<SortGroup> SortGroups
+        {
+            get
+            {
+                return sortGroups;
+            }
 
-        /// <summary>
-        /// The alphabetical
-        /// </summary>
-        Alphabetical,
-
-        /// <summary>
-        /// The alphabetical descending
-        /// </summary>
-        AlphabeticalDescending,
-
-        /// <summary>
-        /// The none
-        /// </summary>
-        None
+            set
+            {
+                sortGroups = value;
+            }
+        }
     }
 }

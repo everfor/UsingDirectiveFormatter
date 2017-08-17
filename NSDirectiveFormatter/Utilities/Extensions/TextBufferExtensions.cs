@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
     using System.Collections.Generic;
-    using UsingDirectiveFormatter.Commands;
     using UsingDirectiveFormatter.Utilities;
+    using UsingDirectiveFormatter.Contracts;
 
     /// <summary>
     /// TextBufferExtensions
