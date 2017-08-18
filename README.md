@@ -10,5 +10,5 @@ Published and available for download at https://marketplace.visualstudio.com/vsg
 
 # Demo
 The demo below shows both a working demo, and a screenshot of options available for the extension
-![alt text](https://github.com/everfor/NSDirectiveFormatter/blob/master/demo.gif "Demo")
-![alt text](https://github.com/everfor/UsingDirectiveFormatter/blob/master/options.gif "Options")
+![Demo gif](https://github.com/everfor/NSDirectiveFormatter/blob/master/demo.gif "Demo")
+![Option gif](https://github.com/everfor/UsingDirectiveFormatter/blob/master/option.gif "Option")
