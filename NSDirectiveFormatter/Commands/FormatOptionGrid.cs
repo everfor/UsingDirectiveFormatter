@@ -5,12 +5,13 @@
     using System.Collections.ObjectModel;
     using Microsoft.VisualStudio.Settings;
     using UsingDirectiveFormatter.Contracts;
+    using UsingDirectiveFormatter.Utilities;
     using Microsoft.VisualStudio.Shell.Settings;
 
     /// <summary>
     /// FormatOptionGrid
     /// </summary>
-    /// <seealso cref="Microsoft.VisualStudio.Shell.DialogPage" />
+    /// <seealso cref="DialogPage" />
     public class FormatOptionGrid : DialogPage
     {
         /// <summary>
@@ -135,20 +136,15 @@
         {
             base.SaveSettingsToStorage();
 
-            // Custom saving for sort group collections, since visual studio is broken and cannot save this
-            // https://stackoverflow.com/questions/32751040/store-array-in-options-using-dialogpage
-            var settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
-            var userSettingStore = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+            var userSettingStore = GetUserSettingStore();
 
             if (!userSettingStore.CollectionExists(CollectionName))
             {
                 userSettingStore.CreateCollection(CollectionName);
             }
 
-            var sortGroupCollectionConverter = new SortGroupCollectionConverter();
-
-            userSettingStore.SetString(CollectionName, nameof(SortGroups), 
-                sortGroupCollectionConverter.ConvertTo(this.SortGroups, typeof(string)) as string);
+            SaveToStore(userSettingStore, nameof(SortGroups), this.SortGroups,
+                new SortGroupCollectionConverter());
         }
 
         /// <summary>
@@ -158,19 +154,64 @@
         {
             base.LoadSettingsFromStorage();
 
-            // Custom loading for sort group collections, since visual studio is broken and cannot save this
-            // https://stackoverflow.com/questions/32751040/store-array-in-options-using-dialogpage
-            var settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
-            var userSettingStore = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+            var userSettingStore = GetUserSettingStore();
 
             if (!userSettingStore.CollectionExists(CollectionName))
             {
                 return;
             }
+            
+            this.sortGroups = LoadFromStore(userSettingStore, nameof(sortGroups), new SortGroupCollectionConverter())
+                as Collection<SortGroup> ?? this.SortGroups;
+        }
 
-            var sortGroupCollectionConverter = new SortGroupCollectionConverter();
-            this.SortGroups = sortGroupCollectionConverter.ConvertFrom(
-                userSettingStore.GetString(CollectionName, nameof(SortGroups))) as Collection<SortGroup>;
+        /// <summary>
+        /// Gets the user setting store.
+        /// </summary>
+        /// <returns></returns>
+        private static WritableSettingsStore GetUserSettingStore()
+        {
+            // Custom saving/loading for sort group collections, since visual studio is broken and cannot save this
+            // https://stackoverflow.com/questions/32751040/store-array-in-options-using-dialogpage
+            var settingsManager = new ShellSettingsManager(ServiceProvider.GlobalProvider);
+            var userSettingStore = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+
+            return userSettingStore;
+        }
+
+        /// <summary>
+        /// Saves to store.
+        /// </summary>
+        /// <param name="store">The store.</param>
+        /// <param name="entry">The entry.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="converter">The converter.</param>
+        private static void SaveToStore(WritableSettingsStore store, string entry,
+            object value, TypeConverter converter)
+        {
+            ArgumentGuard.ArgumentNotNull(store, "store");
+            ArgumentGuard.ArgumentNotNullOrEmpty(entry, "entry");
+            ArgumentGuard.ArgumentNotNull(value, "value");
+            ArgumentGuard.ArgumentNotNull(converter, "converter");
+
+            store.SetString(CollectionName, entry,
+                converter.ConvertTo(value, typeof(string)) as string);
+        }
+
+        /// <summary>
+        /// Loads from store.
+        /// </summary>
+        /// <param name="store">The store.</param>
+        /// <param name="entry">The entry.</param>
+        /// <param name="converter">The converter.</param>
+        /// <returns></returns>
+        private static object LoadFromStore(WritableSettingsStore store, string entry, TypeConverter converter)
+        {
+            ArgumentGuard.ArgumentNotNull(store, "store");
+            ArgumentGuard.ArgumentNotNullOrEmpty(entry, "entry");
+            ArgumentGuard.ArgumentNotNull(converter, "converter");
+
+            return converter.ConvertFrom(store.GetString(CollectionName, entry));
         }
     }
 }
