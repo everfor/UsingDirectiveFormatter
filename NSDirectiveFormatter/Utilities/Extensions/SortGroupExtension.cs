@@ -31,9 +31,17 @@
                 case SortGroupStandard.EndsWith:
                     return value.StartsWith(group.Filter, StringComparison.OrdinalIgnoreCase);
                 case SortGroupStandard.Contains:
-                    return value.IndexOf(group.Filter, StringComparison.OrdinalIgnoreCase) > 0;
+                    return value.IndexOf(group.Filter, StringComparison.OrdinalIgnoreCase) != -1;
                 case SortGroupStandard.MatchRegex:
                     return (new Regex(group.Filter)).IsMatch(value);
+                case SortGroupStandard.NotStartsWith:
+                    return !value.StartsWith(group.Filter, StringComparison.OrdinalIgnoreCase);
+                case SortGroupStandard.NotEndsWith:
+                    return !value.EndsWith(group.Filter, StringComparison.OrdinalIgnoreCase);
+                case SortGroupStandard.NotContains:
+                    return value.IndexOf(group.Filter, StringComparison.OrdinalIgnoreCase) == -1;
+                case SortGroupStandard.NotMatchRegex:
+                    return !(new Regex(group.Filter)).IsMatch(value);
                 default:
                     return false;
             }

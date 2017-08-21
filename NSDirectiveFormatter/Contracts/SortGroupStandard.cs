@@ -24,6 +24,26 @@
         /// <summary>
         /// The matches regex
         /// </summary>
-        MatchRegex
+        MatchRegex,
+
+        /// <summary>
+        /// The not starts with
+        /// </summary>
+        NotStartsWith,
+
+        /// <summary>
+        /// The not ends with
+        /// </summary>
+        NotEndsWith,
+
+        /// <summary>
+        /// The not contains
+        /// </summary>
+        NotContains,
+
+        /// <summary>
+        /// The not match regex
+        /// </summary>
+        NotMatchRegex
     }
 }
