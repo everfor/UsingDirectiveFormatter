@@ -125,7 +125,7 @@
             foreach (var group in groups)
             {
                 result.AddRange(dict[group]);
-                if (separatedGroups)
+                if (separatedGroups && dict[group].Any())
                 {
                     result.Add(string.Empty);
                 }
