@@ -40,6 +40,11 @@
         private Collection<SortGroup> sortGroups = new Collection<SortGroup>();
 
         /// <summary>
+        /// The newlinebetween sort groups
+        /// </summary>
+        private bool newlinebetweenSortGroups = false;
+
+        /// <summary>
         /// Gets or sets the sort order option.
         /// </summary>
         /// <value>
@@ -126,6 +131,28 @@
             set
             {
                 sortGroups = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [new line between sort groups].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [new line between sort groups]; otherwise, <c>false</c>.
+        /// </value>
+        [Category("Options")]
+        [DisplayName("5. New line between sort groups")]
+        [Description("Separate sort groups with blank lines")]
+        public bool NewLineBetweenSortGroups
+        {
+            get
+            {
+                return newlinebetweenSortGroups;
+            }
+
+            set
+            {
+                newlinebetweenSortGroups = value;
             }
         }
 

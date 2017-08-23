@@ -138,7 +138,7 @@
             }
 
             usingDirectives = usingDirectives.Select(s => s.TrimEnd()).OrderBySortStandards(sortStandards).Select(s => indent + s).ToList();
-            usingDirectives = usingDirectives.GroupBySortGroups(sortGroups).ToList();
+            usingDirectives = usingDirectives.GroupBySortGroups(sortGroups, options.NewLineBetweenSortGroups).ToList();
 
             var insertPos = nsReached && insideNamespace ? nsInnerStartPos : nsOuterStartPos;
             var insertString = string.Join(Environment.NewLine, usingDirectives) + Environment.NewLine + Environment.NewLine;

@@ -89,8 +89,9 @@
         /// </summary>
         /// <param name="collection">The collection.</param>
         /// <param name="groups">The groups.</param>
+        /// <param name="separatedGroups">if set to <c>true</c> [separated groups].</param>
         /// <returns></returns>
-        public static IList<string> GroupBySortGroups(this IList<string> collection, IList<SortGroup> groups)
+        public static IList<string> GroupBySortGroups(this IList<string> collection, IList<SortGroup> groups, bool separatedGroups = false)
         {
             ArgumentGuard.ArgumentNotNull(collection, "collection");
             ArgumentGuard.ArgumentNotNull(groups, "groups");
@@ -99,12 +100,13 @@
             {
                 return collection;
             }
-
+            
             var dict = new Dictionary<SortGroup, IList<string>>();
             foreach (var group in groups)
             {
                 dict[group] = new List<string>();
             }
+            var defaultGroup = new List<string>(collection);
 
             foreach (var value in collection)
             {
@@ -113,6 +115,7 @@
                     if (group.Validate(value.Replace(UsingNamespaceDirectivePrefix, string.Empty).Trim()))
                     {
                         dict[group].Add(value);
+                        defaultGroup.Remove(value);
                         break;
                     }
                 }
@@ -122,10 +125,19 @@
             foreach (var group in groups)
             {
                 result.AddRange(dict[group]);
+                if (separatedGroups)
+                {
+                    result.Add(string.Empty);
+                }
             }
-            result.AddRange(collection);
+            result.AddRange(defaultGroup);
 
-            return result.Distinct().ToList();
+            if (string.IsNullOrEmpty(result.Last()))
+            {
+                result.Remove(result.Last());
+            }
+
+            return result.ToList();
         }
     }
 }
