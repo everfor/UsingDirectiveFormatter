@@ -1,3 +1,6 @@
+### 1.5.3
+- Bugfix for blank line separation for sort groups when some groups are empty
+
 ### 1.5.2
 - Added suppport for separating sort groups with a blank line
 
