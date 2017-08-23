@@ -1,3 +1,6 @@
+### 1.5.2
+- Added suppport for separating sort groups with a blank line
+
 ### 1.5.1
 - Added more filter standards for sort groups (NotStartsWith, NotEndsWith, NotContains and NotMatchRegex)
 
