@@ -1,8 +1,9 @@
 # Using Directive Formatter
 - Small Visual Studio extension for productivity in C# developments
+- Can be configured to place all using directives inside or outside the namespace declaration
 - Supports sorting of using directives: By Length or By Alphabetical Order
 - Supports sorting chaining
-- Can be configured to place all using directives inside or outside the namespace declaration
+- Supports user-defined grouping on using directives; sort happens within each group in this case
 
 # Download
 
