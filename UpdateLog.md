@@ -1,3 +1,7 @@
+### 1.5.4
+- Bugfix for exceptions when there is no using statements
+- Bugfix for the accidental deletion of header comments
+
 ### 1.5.3
 - Bugfix for blank line separation for sort groups when some groups are empty
 
