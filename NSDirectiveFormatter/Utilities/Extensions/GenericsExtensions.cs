@@ -96,7 +96,7 @@
             ArgumentGuard.ArgumentNotNull(collection, "collection");
             ArgumentGuard.ArgumentNotNull(groups, "groups");
 
-            if (!groups.Any())
+            if (!groups.Any() || !collection.Any())
             {
                 return collection;
             }

@@ -3,9 +3,9 @@
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using UsingDirectiveFormatter.Commands;
     using UsingDirectiveFormatter.Utilities;
     using UsingDirectiveFormatter.Contracts;
-    using UsingDirectiveFormatter.Commands;
 
     /// <summary>
     /// TextBufferExtensions
@@ -38,6 +38,12 @@
 
             var snapShot = buffer.CurrentSnapshot;
 
+            // Stop processing if there's nothing to process
+            if (snapShot.Length == 0)
+            {
+                return;
+            }
+
             int cursor = 0;
             int tail = 0;
 
@@ -49,6 +55,7 @@
             // Namespace related flags
             bool nsReached = false;
             int startPos = 0;
+            int prensSpanStartPos = 0;
 
             string indent = "";
 
@@ -57,7 +64,8 @@
             // Using directives inside namespace, or all usings is there's no namespace
             Span? nsSpan = null;
 
-            bool lastLineComment = false;
+            bool lastSpanContainsComment = false;
+            bool preserveWhiteSpace = true;
             int spanToPreserve = 0;
 
             foreach (var line in snapShot.Lines)
@@ -78,16 +86,32 @@
                 if (lineTextTrimmed.StartsWith("/", StringComparison.Ordinal))
                 {
                     spanToPreserve += line.LengthIncludingLineBreak;
-                    lastLineComment = true;
+                    lastSpanContainsComment = true;
                 }
-                else if (!string.IsNullOrWhiteSpace(lineTextTrimmed))
+                else if (string.IsNullOrWhiteSpace(lineTextTrimmed))
                 {
-                    if (!lastLineComment)
+                    spanToPreserve = preserveWhiteSpace ? spanToPreserve + line.LengthIncludingLineBreak : spanToPreserve;
+                }
+                else
+                {
+                    if (lastSpanContainsComment)
+                    {
+                        // Reset start pos if there are header comments
+                        if (prensSpanStartPos == 0)
+                        {
+                            prensSpanStartPos = spanToPreserve;
+                            spanToPreserve = 0;
+                        }
+                    }
+                    else
                     {
                         spanToPreserve = 0;
                     }
 
-                    lastLineComment = false;
+                    lastSpanContainsComment = false;
+                    // Stop preserving whitespaces once we've hit actual code
+                    // Since we only want to preserve whitespaces in header comments
+                    preserveWhiteSpace = false;
 
                     if (lineTextTrimmed.StartsWith(UsingNamespaceDirectivePrefix, StringComparison.Ordinal))
                     {
@@ -110,7 +134,7 @@
                     }
                     else if (lineTextTrimmed.StartsWith(NamespaceDeclarationPrefix, StringComparison.Ordinal))
                     {
-                        prensSpan = new Span(0, cursor - spanToPreserve);
+                        prensSpan = new Span(prensSpanStartPos, cursor - prensSpanStartPos - spanToPreserve);
                         nsReached = true;
                         nsInnerStartPos = tail;
                         startPos = tail;
