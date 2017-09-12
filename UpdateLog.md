@@ -1,3 +1,7 @@
+### 1.5.5
+- Bugfix for always duplicating the first using directive if there is no namespace declarations
+- Bugfix for accidental deleting comment blocks before a class declaration
+
 ### 1.5.4
 - Bugfix for exceptions when there is no using statements
 - Bugfix for the accidental deletion of header comments
