@@ -54,7 +54,7 @@
 
             // Namespace related flags
             bool nsReached = false;
-            int startPos = 0;
+            int startPos = -1;
             int prensSpanStartPos = 0;
 
             string indent = "";
@@ -97,7 +97,7 @@
                     if (lastSpanContainsComment)
                     {
                         // Reset start pos if there are header comments
-                        if (prensSpanStartPos == 0)
+                        if (prensSpanStartPos == 0 && !nsReached)
                         {
                             prensSpanStartPos = spanToPreserve;
                             spanToPreserve = 0;
@@ -120,7 +120,7 @@
                             nsInnerStartPos = cursor;
                         }
 
-                        if (startPos == 0)
+                        if (startPos < 0)
                         {
                             startPos = cursor;
                         }
@@ -154,6 +154,10 @@
                     }
                     else
                     {
+                        startPos = Math.Max(startPos, 0);
+                        // Special case for when there is no namespace decalartion
+                        spanToPreserve = nsReached ? spanToPreserve : spanToPreserve + prensSpanStartPos;
+
                         nsSpan =
                             new Span(startPos, cursor - startPos - spanToPreserve);
                         break;
