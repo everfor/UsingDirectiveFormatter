@@ -1,3 +1,6 @@
+### 1.5.6
+- Bugfix for when the newline separator for sort group is enabled, the first separator is mistakenly removed
+
 ### 1.5.5
 - Bugfix for always duplicating the first using directive if there is no namespace declarations
 - Bugfix for accidental deleting comment blocks before a class declaration
