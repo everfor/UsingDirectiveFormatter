@@ -134,7 +134,7 @@
 
             if (string.IsNullOrEmpty(result.Last()))
             {
-                result.Remove(result.Last());
+                result.RemoveAt(result.Count - 1);
             }
 
             return result.ToList();

@@ -8,11 +8,9 @@ namespace UsingDirectiveFormatter.Commands
     using EnvDTE;
     using System;
     using EnvDTE80;
-    using System.Collections.Generic;
     using Microsoft.VisualStudio.Text;
     using Microsoft.VisualStudio.Shell;
     using System.ComponentModel.Design;
-    using UsingDirectiveFormatter.Contracts;
     using Microsoft.VisualStudio.Shell.Interop;
 
     /// <summary>
