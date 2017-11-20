@@ -1,3 +1,7 @@
+### 1.5.7
+- Bugfix for additional whitespaces added when there is no using directives to format
+- Bugfix for accidental deletion of comment blocks immediately after using directives
+
 ### 1.5.6
 - Bugfix for when the newline separator for sort group is enabled, the first separator is mistakenly removed
 

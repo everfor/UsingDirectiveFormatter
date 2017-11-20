@@ -65,7 +65,6 @@
             Span? nsSpan = null;
 
             bool lastSpanContainsComment = false;
-            bool preserveWhiteSpace = true;
             int spanToPreserve = 0;
 
             foreach (var line in snapShot.Lines)
@@ -90,14 +89,14 @@
                 }
                 else if (string.IsNullOrWhiteSpace(lineTextTrimmed))
                 {
-                    spanToPreserve = preserveWhiteSpace ? spanToPreserve + line.LengthIncludingLineBreak : spanToPreserve;
+                    spanToPreserve += line.LengthIncludingLineBreak;
                 }
                 else
                 {
                     if (lastSpanContainsComment)
                     {
                         // Reset start pos if there are header comments
-                        if (prensSpanStartPos == 0 && !nsReached)
+                        if (prensSpanStartPos == 0 && !nsReached && !usingDirectives.Any())
                         {
                             prensSpanStartPos = spanToPreserve;
                             spanToPreserve = 0;
@@ -109,9 +108,6 @@
                     }
 
                     lastSpanContainsComment = false;
-                    // Stop preserving whitespaces once we've hit actual code
-                    // Since we only want to preserve whitespaces in header comments
-                    preserveWhiteSpace = false;
 
                     if (lineTextTrimmed.StartsWith(UsingNamespaceDirectivePrefix, StringComparison.Ordinal))
                     {
@@ -134,8 +130,11 @@
                     }
                     else if (lineTextTrimmed.StartsWith(NamespaceDeclarationPrefix, StringComparison.Ordinal))
                     {
-                        prensSpan = new Span(prensSpanStartPos, cursor - prensSpanStartPos - spanToPreserve);
-                        nsReached = true;
+                        if (!nsReached)
+                        {
+                            prensSpan = new Span(prensSpanStartPos, cursor - prensSpanStartPos - spanToPreserve);
+                            nsReached = true;
+                        }
                         nsInnerStartPos = tail;
                         startPos = tail;
                         nsOuterStartPos = cursor;
@@ -165,24 +164,27 @@
                 }
             }
 
-            usingDirectives = usingDirectives.Select(s => s.TrimEnd()).OrderBySortStandards(sortStandards).Select(s => indent + s).ToList();
-            usingDirectives = usingDirectives.GroupBySortGroups(sortGroups, options.NewLineBetweenSortGroups).ToList();
-
-            var insertPos = nsReached && insideNamespace ? nsInnerStartPos : nsOuterStartPos;
-            var insertString = string.Join(Environment.NewLine, usingDirectives) + Environment.NewLine + Environment.NewLine;
-
-            // Testing
-            var edit = buffer.CreateEdit();
-            edit.Insert(insertPos, insertString);
-            if (nsSpan != null)
+            if (usingDirectives.Any())
             {
-                edit.Delete(nsSpan.Value);
+                usingDirectives = usingDirectives.Select(s => s.TrimEnd()).OrderBySortStandards(sortStandards).Select(s => indent + s).ToList();
+                usingDirectives = usingDirectives.GroupBySortGroups(sortGroups, options.NewLineBetweenSortGroups).ToList();
+
+                var insertPos = nsReached && insideNamespace ? nsInnerStartPos : nsOuterStartPos;
+                var insertString = string.Join(Environment.NewLine, usingDirectives) + Environment.NewLine;
+
+                // Testing
+                var edit = buffer.CreateEdit();
+                edit.Insert(insertPos, insertString);
+                if (nsSpan != null)
+                {
+                    edit.Delete(nsSpan.Value);
+                }
+                if (prensSpan != null)
+                {
+                    edit.Delete(prensSpan.Value);
+                }
+                edit.Apply();
             }
-            if (prensSpan != null)
-            {
-                edit.Delete(prensSpan.Value);
-            }
-            edit.Apply();
         }
     }
 }
